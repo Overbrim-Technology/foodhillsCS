@@ -97,13 +97,17 @@ export default function App() {
   const whatsappNumber = '2347080940239';
 
   const generateWhatsAppMessage = () => {
-    let text = `*New Order from FoodHills Camp Shop*\n\n`;
+    const lines = ['*FoodHills Order*'];
+
     cart.forEach((item, i) => {
-      text += `${i + 1}. *${item.name}* x ${item.quantity}\n   Price: ${formatPrice(item.price * item.quantity)} (${item.unit || 'unit'})\n`;
+      const compactName = item.name.length > 24 ? `${item.name.slice(0, 21)}...` : item.name;
+      lines.push(`${i + 1}. ${compactName} x${item.quantity} - ${formatPrice(item.price * item.quantity)}`);
     });
-    text += `\n*Total Order Amount:* ${formatPrice(cartTotal)}`;
-    text += `\n\nPlease confirm availability and delivery to camp.`;
-    return encodeURIComponent(text);
+
+    lines.push(`*Total:* ${formatPrice(cartTotal)}`);
+    lines.push('Please confirm availability and delivery.');
+
+    return encodeURIComponent(lines.join('\n'));
   };
 
   return (
