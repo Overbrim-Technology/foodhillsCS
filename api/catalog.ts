@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getImageUrl } from '../src/catalog/images';
-import { parseProductsCsv } from '../src/catalog/csv';
-import { getSupabaseAdmin } from './_supabase';
+import { getImageUrl } from '../src/catalog/images.js';
+import { parseProductsCsv } from '../src/catalog/csv.js';
+import { getSupabaseAdmin } from './_supabase.js';
 
 export default async function handler(_request: VercelRequest, response: VercelResponse) {
   try {

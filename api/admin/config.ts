@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { isAdminRequest } from '../_auth';
-import { getSupabaseAdmin } from '../_supabase';
+import { isAdminRequest } from '../_auth.js';
+import { getSupabaseAdmin } from '../_supabase.js';
 
 type CatalogSource = {
   csv_url: string;

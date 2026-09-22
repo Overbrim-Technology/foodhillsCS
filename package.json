@@ -19,6 +19,7 @@
     "@tailwindcss/vite": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "@types/node": "latest",
     "@vercel/node": "latest",
     "tailwindcss": "latest",
     "typescript": "latest",

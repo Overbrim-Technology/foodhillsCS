@@ -8,6 +8,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "types": ["vite/client", "node"],
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
@@ -17,5 +18,5 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src"]
+  "include": ["src", "api"]
 }
