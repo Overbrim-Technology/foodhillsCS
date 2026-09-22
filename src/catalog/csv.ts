@@ -1,5 +1,5 @@
-import { CSV_HEADERS } from '../config';
-import type { Product } from '../types';
+import { CSV_HEADERS } from '../config.js';
+import type { Product } from '../types.js';
 
 const parseCsvRows = (csvText: string): string[][] => {
   const rows: string[][] = [];
