@@ -1,0 +1,50 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Install and build FoodHills shop",
+			"type": "shell",
+			"command": "npm install; npm run build",
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Verify FoodHills production build",
+			"type": "shell",
+			"command": "npm run build",
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Start FoodHills dev server",
+			"type": "shell",
+			"command": "npm run dev -- --host 0.0.0.0",
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Verify vendor catalog and image changes",
+			"type": "shell",
+			"command": "npm run build",
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Move component into src/App.tsx",
+			"type": "shell",
+			"command": "Move-Item -LiteralPath .\\foodhills_camp_shop.tsx -Destination .\\src\\App.tsx",
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}

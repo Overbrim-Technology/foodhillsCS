@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+button,
+a,
+input {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
