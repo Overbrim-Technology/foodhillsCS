@@ -5,6 +5,8 @@ const SESSION_TTL_SECONDS = 60 * 60 * 8;
 
 const getSecret = () => process.env.ADMIN_SESSION_SECRET || '';
 
+export const hasAdminConfiguration = () => Boolean(process.env.ADMIN_PASSWORD && getSecret());
+
 const sign = (value: string) => createHmac('sha256', getSecret()).update(value).digest('hex');
 
 export const createAdminCookie = () => {

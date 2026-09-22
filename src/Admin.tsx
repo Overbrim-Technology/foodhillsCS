@@ -34,7 +34,11 @@ export default function Admin() {
         credentials: 'include',
         body: JSON.stringify({ password }),
       });
-      if (!response.ok) throw new Error('Invalid password');
+      if (!response.ok) {
+        const data = await response.json().catch(() => null) as { error?: string } | null;
+        if (response.status === 401) throw new Error('Invalid admin password');
+        throw new Error(data?.error || `Admin server error (${response.status})`);
+      }
       await loadSources();
       setIsAuthenticated(true);
       setPassword('');
