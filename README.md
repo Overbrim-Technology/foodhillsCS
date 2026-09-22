@@ -20,8 +20,8 @@ The storefront does not accept Google Sheet URLs. Vendor sources are stored in S
    - `ADMIN_PASSWORD`
    - `ADMIN_SESSION_SECRET`
    - `SUPABASE_URL`
-   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `SUPABASE_SECRET_KEY` (the `sb_secret_...` key from Supabase)
 5. Deploy with Vercel using `npm run build` and `dist` as the output directory.
 6. Open `/admin`, sign in, and add one published CSV URL per vendor.
 
-The Supabase service-role key must only exist in server environment variables. It must never be put in frontend code or a `VITE_` variable.
+The Supabase secret key must only exist in server environment variables. It must never be put in frontend code, a `VITE_` variable, source control, or the browser. Do not use the publishable key for these server-side admin queries because the catalog sources table has no public read policy.

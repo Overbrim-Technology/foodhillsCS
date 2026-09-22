@@ -8,5 +8,5 @@ create table if not exists public.catalog_sources (
 
 alter table public.catalog_sources enable row level security;
 
--- The application uses the server-only Supabase service role key.
+-- The application uses the server-only Supabase secret key.
 -- Do not add a public select policy for this table.

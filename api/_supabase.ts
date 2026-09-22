@@ -2,9 +2,9 @@ import { createClient } from '@supabase/supabase-js';
 
 export const getSupabaseAdmin = () => {
   const url = process.env.SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !serviceRoleKey) {
-    throw new Error('SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be configured');
+  const secretKey = process.env.SUPABASE_SECRET_KEY;
+  if (!url || !secretKey) {
+    throw new Error('SUPABASE_URL and SUPABASE_SECRET_KEY must be configured');
   }
-  return createClient(url, serviceRoleKey, { auth: { persistSession: false } });
+  return createClient(url, secretKey, { auth: { persistSession: false } });
 };
