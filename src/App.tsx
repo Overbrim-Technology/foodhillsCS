@@ -94,6 +94,8 @@ export default function App() {
     });
   }, [products, activeCategory, searchQuery]);
 
+  const whatsappNumber = '2347080940239';
+
   const generateWhatsAppMessage = () => {
     let text = `*New Order from FoodHills Camp Shop*\n\n`;
     cart.forEach((item, i) => {
@@ -454,7 +456,7 @@ export default function App() {
                 </div>
 
                 <a 
-                  href={`https://wa.me/?text=${generateWhatsAppMessage()}`}
+                  href={`https://wa.me/${whatsappNumber}?text=${generateWhatsAppMessage()}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2"
