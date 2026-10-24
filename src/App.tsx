@@ -186,13 +186,13 @@ export default function App() {
             {/* Header Right Actions */}
             <div className="flex items-center gap-2 sm:gap-3">
               {/* Sheet Integration Settings Button */}
-              <button 
+              {/* <button 
                 onClick={() => window.open('/admin', '_blank', 'noopener,noreferrer')}
                 className="p-2 text-emerald-200 hover:text-white hover:bg-emerald-700 rounded-lg transition flex items-center gap-1.5 text-xs font-medium"
                 title="Open admin portal"
               >
                 <span className="hidden sm:inline">Admin</span>
-              </button>
+              </button> */}
 
               {/* Cart Button */}
               <button 
@@ -237,13 +237,13 @@ export default function App() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <div className="inline-flex items-center gap-2 bg-emerald-700/60 border border-emerald-500/40 px-3 py-1 rounded-full text-xs font-semibold text-amber-300 mb-2">
-              <Store size={14} /> Camp-Shop Vendor Portal Active
+              <Store size={14} /> Get Food Now Vendor Portal Active
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-              Fresh Food Produce & Camp Supplies
+              Fresh Food Produce & Supplies
             </h2>
             <p className="text-emerald-100/80 text-sm mt-1 max-w-2xl">
-              Order livestock, fresh vegetables, grains, eggs, and tubers directly supplied to FoodHills camps at official wholesale rates.
+              Order livestock, fresh vegetables, grains, eggs, and tubers directly suppllied at official wholesale rates.
             </p>
             <p className="text-emerald-100/80 text-xs mt-2 max-w-2xl">
               For limited-time items, order by the date shown. Orders placed by then are delivered together.
@@ -285,7 +285,7 @@ export default function App() {
         {isLoading ? (
           <div className="py-20 text-center text-emerald-800">
             <RefreshCw className="animate-spin mx-auto mb-3" size={32} />
-            <p className="font-semibold text-stone-600">Syncing FoodHills inventory...</p>
+            <p className="font-semibold text-stone-600">Syncing getfoodnow inventory...</p>
           </div>
         ) : catalogError ? (
           <div className="bg-white rounded-2xl p-12 text-center border border-stone-200 max-w-md mx-auto my-8 shadow-sm">
@@ -355,8 +355,8 @@ export default function App() {
                         <p className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-amber-700">
                           <Clock3 size={13} />
                           {daysUntilOrderCloses === 0
-                            ? 'Order by today · last day'
-                            : `Order by ${formatOrderDate(lastOrderDate)} · ${daysUntilOrderCloses} day${daysUntilOrderCloses === 1 ? '' : 's'} left`}
+                            ? 'Order latest today · last day'
+                            : `Order latest ${formatOrderDate(lastOrderDate)} · ${daysUntilOrderCloses} day${daysUntilOrderCloses === 1 ? '' : 's'} left`}
                         </p>
                       )}
                     </div>
@@ -409,7 +409,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
             <Leaf className="text-emerald-500" size={18} />
-            <span className="font-bold text-stone-200">FoodHills Camp Shop</span>
+            <span className="font-bold text-stone-200">getfoodnow</span>
             <span>&copy; {new Date().getFullYear()}</span>
           </div>
           <p className="text-stone-500 text-center md:text-right">
