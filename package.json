@@ -9,17 +9,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "latest",
     "@vitejs/plugin-react": "latest",
     "lucide-react": "latest",
     "react": "latest",
-    "react-dom": "latest",
-    "@supabase/supabase-js": "latest"
+    "react-dom": "latest"
   },
   "devDependencies": {
     "@tailwindcss/vite": "latest",
+    "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
-    "@types/node": "latest",
     "@vercel/node": "latest",
     "tailwindcss": "latest",
     "typescript": "latest",

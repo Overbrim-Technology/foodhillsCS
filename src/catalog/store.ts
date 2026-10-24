@@ -1,17 +1,11 @@
-import { MOCK_DATA } from '../config';
 import { parseProductsCsv } from './csv';
 import type { Product } from '../types';
 
-export const loadCatalog = async (urlInput: string): Promise<{ products: Product[]; usingMock: boolean }> => {
+export const loadCatalog = async (urlInput: string): Promise<{ products: Product[] }> => {
   if (urlInput === '/api/catalog') {
-    try {
-      const response = await fetch(urlInput);
-      if (!response.ok) throw new Error(`Catalog API error: ${response.status}`);
-      return response.json();
-    } catch (error) {
-      console.warn('Catalog API unavailable, using demo data:', error);
-      return { products: MOCK_DATA, usingMock: true };
-    }
+    const response = await fetch(urlInput);
+    if (!response.ok) throw new Error(`Catalog API error: ${response.status}`);
+    return await response.json();
   }
 
   const urls = urlInput
@@ -19,7 +13,7 @@ export const loadCatalog = async (urlInput: string): Promise<{ products: Product
     .map(url => url.trim())
     .filter(Boolean);
 
-  if (urls.length === 0) return { products: MOCK_DATA, usingMock: true };
+  if (urls.length === 0) throw new Error('No catalog sources are configured');
 
   const results = await Promise.all(urls.map(async (url, sourceIndex) => {
     try {
@@ -40,7 +34,6 @@ export const loadCatalog = async (urlInput: string): Promise<{ products: Product
   }));
 
   const products = results.flat();
-  return products.length > 0
-    ? { products, usingMock: false }
-    : { products: MOCK_DATA, usingMock: true };
+  if (products.length === 0) throw new Error('No products could be loaded from the configured catalog sources');
+  return { products };
 };

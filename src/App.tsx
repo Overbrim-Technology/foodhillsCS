@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { getImageUrl } from './catalog/images';
+import { getDateKey, getDaysUntil } from './catalog/availability';
 import { loadCatalog } from './catalog/store';
 import { formatPrice } from './formatters';
 import type { CartItem, Product } from './types';
@@ -15,14 +16,15 @@ import {
   AlertCircle,
   RefreshCw,
   PhoneCall,
-  Info,
   Store,
+  Clock3,
 } from 'lucide-react';
 
 export default function App() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [today, setToday] = useState(getDateKey);
   const [isLoading, setIsLoading] = useState(true);
-  const [usingMock, setUsingMock] = useState(false);
+  const [catalogError, setCatalogError] = useState<string | null>(null);
   
   // Filters & Cart State
   const [activeCategory, setActiveCategory] = useState('All');
@@ -34,6 +36,11 @@ export default function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState(null); // 'checkout' | 'success'
 
+  const formatOrderDate = (date: string) => new Intl.DateTimeFormat(undefined, {
+    month: 'short',
+    day: 'numeric',
+  }).format(new Date(`${date}T00:00:00`));
+
   const categories = useMemo(() => {
     const productCategories = products
       .map(product => product.category)
@@ -43,18 +50,34 @@ export default function App() {
 
   const loadStoreData = async () => {
     setIsLoading(true);
-    setUsingMock(false);
-    const catalog = await loadCatalog('/api/catalog');
-    setProducts(catalog.products);
-    setUsingMock(catalog.usingMock);
-    setIsLoading(false);
+    setCatalogError(null);
+    try {
+      const catalog = await loadCatalog('/api/catalog');
+      setProducts(catalog.products);
+    } catch (error) {
+      setCatalogError(error instanceof Error ? error.message : 'Unable to load the catalogue');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
     loadStoreData();
   }, []);
 
+  useEffect(() => {
+    const interval = window.setInterval(() => setToday(getDateKey()), 60_000);
+    return () => window.clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    setCart(current => current.filter(item => (
+      !item.last_order_date || getDaysUntil(item.last_order_date, today) >= 0
+    )));
+  }, [today]);
+
   const addToCart = (product: Product) => {
+    if (product.last_order_date && getDaysUntil(product.last_order_date, today) < 0) return;
     setCart(prev => {
       const existing = prev.find(item => item.id === product.id);
       if (existing) {
@@ -90,14 +113,15 @@ export default function App() {
         product.category.toLowerCase() === activeCategory.toLowerCase();
       const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         product.category.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesCategory && matchesSearch;
+      const isAvailable = !product.last_order_date || getDaysUntil(product.last_order_date, today) >= 0;
+      return matchesCategory && matchesSearch && isAvailable;
     });
-  }, [products, activeCategory, searchQuery]);
+  }, [products, activeCategory, searchQuery, today]);
 
   const whatsappNumber = '2347080940239';
 
   const generateWhatsAppMessage = () => {
-    const lines = ['*FoodHills Order*'];
+    const lines = ['*GetFoodNow Order*'];
 
     cart.forEach((item, i) => {
       const compactName = item.name.length > 24 ? `${item.name.slice(0, 21)}...` : item.name;
@@ -135,7 +159,7 @@ export default function App() {
                 </div>
                 <div>
                   <h1 className="text-xl font-black tracking-wide leading-tight">
-                    FoodHills <span className="font-light text-emerald-200">Camp Shop</span>
+                    Get Food Now <span className="font-light text-emerald-200">Camp Shop</span>
                   </h1>
                   <p className="text-[10px] text-emerald-200 hidden sm:block tracking-wider uppercase">Direct Farm Produce</p>
                 </div>
@@ -221,14 +245,11 @@ export default function App() {
             <p className="text-emerald-100/80 text-sm mt-1 max-w-2xl">
               Order livestock, fresh vegetables, grains, eggs, and tubers directly supplied to FoodHills camps at official wholesale rates.
             </p>
+            <p className="text-emerald-100/80 text-xs mt-2 max-w-2xl">
+              For limited-time items, order by the date shown. Orders placed by then are delivered together.
+            </p>
           </div>
 
-          {usingMock && (
-            <div className="bg-amber-500/10 border border-amber-400/30 p-3 rounded-xl flex items-start gap-2 max-w-sm text-xs text-amber-200">
-              <Info size={16} className="text-amber-400 shrink-0 mt-0.5" />
-              <div><strong className="text-amber-300">Demo Mode Active:</strong> The live catalog is not configured yet. An administrator can add vendor sources through the admin portal.</div>
-            </div>
-          )}
         </div>
       </section>
 
@@ -266,6 +287,18 @@ export default function App() {
             <RefreshCw className="animate-spin mx-auto mb-3" size={32} />
             <p className="font-semibold text-stone-600">Syncing FoodHills inventory...</p>
           </div>
+        ) : catalogError ? (
+          <div className="bg-white rounded-2xl p-12 text-center border border-stone-200 max-w-md mx-auto my-8 shadow-sm">
+            <AlertCircle className="mx-auto text-amber-500 mb-3" size={40} />
+            <h3 className="text-lg font-bold text-stone-800">Catalogue unavailable</h3>
+            <p className="text-stone-500 text-sm mt-1">{catalogError}</p>
+            <button
+              onClick={() => { void loadStoreData(); }}
+              className="mt-4 px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800 transition"
+            >
+              Retry
+            </button>
+          </div>
         ) : filteredProducts.length === 0 ? (
           <div className="bg-white rounded-2xl p-12 text-center border border-stone-200 max-w-md mx-auto my-8 shadow-sm">
             <AlertCircle className="mx-auto text-amber-500 mb-3" size={40} />
@@ -284,6 +317,10 @@ export default function App() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredProducts.map(product => {
               const inCart = cart.find(item => item.id === product.id);
+              const lastOrderDate = product.last_order_date;
+              const daysUntilOrderCloses = lastOrderDate
+                ? getDaysUntil(lastOrderDate, today)
+                : null;
               return (
                 <div 
                   key={product.id}
@@ -313,6 +350,14 @@ export default function App() {
                       </h3>
                       {product.unit && (
                         <p className="text-xs text-stone-400 mt-0.5">Unit: {product.unit}</p>
+                      )}
+                      {lastOrderDate && daysUntilOrderCloses !== null && (
+                        <p className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-amber-700">
+                          <Clock3 size={13} />
+                          {daysUntilOrderCloses === 0
+                            ? 'Order by today · last day'
+                            : `Order by ${formatOrderDate(lastOrderDate)} · ${daysUntilOrderCloses} day${daysUntilOrderCloses === 1 ? '' : 's'} left`}
+                        </p>
                       )}
                     </div>
 

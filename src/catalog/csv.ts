@@ -1,4 +1,5 @@
 import { CSV_HEADERS } from '../config.js';
+import { isValidDateOnly } from './availability.js';
 import type { Product } from '../types.js';
 
 const parseCsvRows = (csvText: string): string[][] => {
@@ -44,12 +45,16 @@ export const parseProductsCsv = (csvText: string): Product[] => {
   if (missingHeaders.length > 0) {
     throw new Error(`CSV is missing required headers: ${missingHeaders.join(', ')}`);
   }
-
   const products = rows.slice(1).map((values, index) => {
     const item = Object.fromEntries(
       headers.map((header, valueIndex) => [header, values[valueIndex] || ''])
     ) as Record<string, string>;
     const normalizedPrice = item.price.replace(/[^0-9.-]/g, '');
+    const lastOrderDate = item.last_order_date || undefined;
+
+    if (lastOrderDate && !isValidDateOnly(lastOrderDate)) {
+      throw new Error(`Invalid last_order_date on CSV row ${index + 2}; use YYYY-MM-DD`);
+    }
 
     return {
       id: item.id || `sheet-${index}`,
@@ -58,6 +63,7 @@ export const parseProductsCsv = (csvText: string): Product[] => {
       category: item.category || 'General',
       unit: item.unit || 'unit',
       image_filename: item.image_filename || '',
+      ...(lastOrderDate ? { last_order_date: lastOrderDate } : {}),
     };
   });
 
